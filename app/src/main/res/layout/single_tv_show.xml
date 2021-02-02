@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="tvShow"
+            type="io.github.mortuzahossain.mvvm.models.TvShowsItem" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/_4sdp">
+
+        <com.makeramen.roundedimageview.RoundedImageView
+            android:id="@+id/roundedImageView"
+            android:layout_width="@dimen/_100sdp"
+            android:layout_height="@dimen/_140sdp"
+            android:layout_marginStart="16dp"
+            android:imageUrl="@{tvShow.imageThumbnailPath}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:riv_corner_radius="@dimen/_4sdp" />
+
+        <TextView
+            android:id="@+id/tvName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:fontFamily="monospace"
+            android:text="@{tvShow.name}"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_14ssp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/roundedImageView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/roundedImageView"
+            app:layout_constraintTop_toTopOf="@+id/roundedImageView"
+            app:layout_constraintVertical_bias="0.13999999" />
+
+        <TextView
+            android:id="@+id/tvNetwork"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@{tvShow.network}"
+            app:layout_constraintEnd_toEndOf="@+id/tvName"
+            app:layout_constraintStart_toStartOf="@+id/tvName"
+            app:layout_constraintTop_toBottomOf="@+id/tvName" />
+
+        <TextView
+            android:id="@+id/tvStarted"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@{tvShow.startDate}"
+            app:layout_constraintEnd_toEndOf="@+id/tvNetwork"
+            app:layout_constraintStart_toStartOf="@+id/tvNetwork"
+            app:layout_constraintTop_toBottomOf="@+id/tvNetwork" />
+
+        <TextView
+            android:id="@+id/tvStatus"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@{tvShow.status}"
+            app:layout_constraintEnd_toEndOf="@+id/tvStarted"
+            app:layout_constraintStart_toStartOf="@+id/tvStarted"
+            app:layout_constraintTop_toBottomOf="@+id/tvStarted" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
