@@ -27,7 +27,7 @@ public class TvShow{
 	private String url;
 
 	@SerializedName("pictures")
-	private List<String> pictures;
+	private String[] pictures;
 
 	@SerializedName("network")
 	private String network;
@@ -96,7 +96,7 @@ public class TvShow{
 		return url;
 	}
 
-	public List<String> getPictures(){
+	public String[] getPictures(){
 		return pictures;
 	}
 
