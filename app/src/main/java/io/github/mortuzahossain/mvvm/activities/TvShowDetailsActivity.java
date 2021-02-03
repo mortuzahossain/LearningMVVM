@@ -34,6 +34,7 @@ public class TvShowDetailsActivity extends AppCompatActivity {
     private void InitUi() {
         viewModel = new ViewModelProvider(this).get(TvShowDetailsViewModel.class);
         getTvShowDetails();
+        activityDetailsBinding.ivBackArrow.setOnClickListener(v -> onBackPressed());
     }
 
     private void getTvShowDetails() {
@@ -47,6 +48,9 @@ public class TvShowDetailsActivity extends AppCompatActivity {
                 if (tvShowDetailsResponse != null){
                     if (tvShowDetailsResponse.getTvShow() != null){
                         if (tvShowDetailsResponse.getTvShow().getPictures() != null){
+                            activityDetailsBinding.setImageUrl(
+                                    tvShowDetailsResponse.getTvShow().getImageThumbnailPath()
+                            );
                             loadImageSliders(tvShowDetailsResponse.getTvShow().getPictures());
                         }
                     }
