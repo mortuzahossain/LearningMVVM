@@ -33,7 +33,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             android:fontFamily="monospace"
-            android:text="@{tvShow.name}"
+            android:text='@{tvShow.name}'
             android:textColor="@color/black"
             android:textSize="@dimen/_14ssp"
             android:textStyle="bold"
@@ -47,7 +47,7 @@
             android:id="@+id/tvNetwork"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@{tvShow.network}"
+            android:text='@{"Network: "+tvShow.network}'
             app:layout_constraintEnd_toEndOf="@+id/tvName"
             app:layout_constraintStart_toStartOf="@+id/tvName"
             app:layout_constraintTop_toBottomOf="@+id/tvName" />
@@ -56,7 +56,7 @@
             android:id="@+id/tvStarted"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@{tvShow.startDate}"
+            android:text='@{"Started at - "+tvShow.startDate}'
             app:layout_constraintEnd_toEndOf="@+id/tvNetwork"
             app:layout_constraintStart_toStartOf="@+id/tvNetwork"
             app:layout_constraintTop_toBottomOf="@+id/tvNetwork" />
@@ -65,7 +65,7 @@
             android:id="@+id/tvStatus"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@{tvShow.status}"
+            android:text='@{"Status: "+tvShow.status}'
             app:layout_constraintEnd_toEndOf="@+id/tvStarted"
             app:layout_constraintStart_toStartOf="@+id/tvStarted"
             app:layout_constraintTop_toBottomOf="@+id/tvStarted" />
