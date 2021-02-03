@@ -13,6 +13,7 @@ import java.util.List;
 
 import io.github.mortuzahossain.mvvm.R;
 import io.github.mortuzahossain.mvvm.databinding.ItemContainerTvShowBinding;
+import io.github.mortuzahossain.mvvm.interfaces.TvShowClickListener;
 import io.github.mortuzahossain.mvvm.models.TvShowsItem;
 
 /**
@@ -23,9 +24,11 @@ public class TvShowsAdapter extends RecyclerView.Adapter<TvShowsAdapter.TvShowVi
 
     private List<TvShowsItem> tvShowsItems;
     private LayoutInflater layoutInflater;
+    private TvShowClickListener tvShowClickListener;
 
-    public TvShowsAdapter(List<TvShowsItem> tvShowsItems) {
+    public TvShowsAdapter(List<TvShowsItem> tvShowsItems,TvShowClickListener tvShowClickListener) {
         this.tvShowsItems = tvShowsItems;
+        this.tvShowClickListener = tvShowClickListener;
     }
 
     @NonNull
@@ -50,7 +53,7 @@ public class TvShowsAdapter extends RecyclerView.Adapter<TvShowsAdapter.TvShowVi
         return tvShowsItems.size();
     }
 
-    static class TvShowViewHolder extends RecyclerView.ViewHolder {
+    public class TvShowViewHolder extends RecyclerView.ViewHolder {
         ItemContainerTvShowBinding itemContainerTvShowBinding;
 
         public TvShowViewHolder(@NonNull ItemContainerTvShowBinding itemView) {
@@ -61,6 +64,12 @@ public class TvShowsAdapter extends RecyclerView.Adapter<TvShowsAdapter.TvShowVi
         public void BindTvShows(TvShowsItem tvShowsItem) {
             itemContainerTvShowBinding.setTvShow(tvShowsItem);
             itemContainerTvShowBinding.executePendingBindings();
+            itemContainerTvShowBinding.getRoot().setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    tvShowClickListener.onTvShowClicked(tvShowsItem);
+                }
+            });
         }
     }
 }

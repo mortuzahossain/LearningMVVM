@@ -12,6 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MVVM"
         android:usesCleartextTraffic="true">
+        <activity android:name=".activities.TvShowDetailsActivity"></activity>
         <activity android:name=".activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
