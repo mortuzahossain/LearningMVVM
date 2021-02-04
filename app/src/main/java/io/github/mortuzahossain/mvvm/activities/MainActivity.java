@@ -91,6 +91,7 @@ public class MainActivity extends AppCompatActivity implements TvShowClickListen
         intent.putExtra("StartDate", tvShow.getStartDate());
         intent.putExtra("Country", tvShow.getCountry());
         intent.putExtra("Network", tvShow.getNetwork());
+        intent.putExtra("tvShow", tvShow);
         startActivity(intent);
     }
 }
