@@ -1,6 +1,9 @@
 package io.github.mortuzahossain.mvvm.activities;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -8,15 +11,19 @@ import android.widget.LinearLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.core.text.HtmlCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.widget.ViewPager2;
 
+import java.util.Locale;
+
 import io.github.mortuzahossain.mvvm.R;
 import io.github.mortuzahossain.mvvm.adapter.ImageSliderAdapter;
 import io.github.mortuzahossain.mvvm.databinding.ActivityTvShowDetailsBinding;
 import io.github.mortuzahossain.mvvm.models.TvShowDetailsResponse;
+import io.github.mortuzahossain.mvvm.utils.IntentUtils;
 import io.github.mortuzahossain.mvvm.viewmodels.TvShowDetailsViewModel;
 
 public class TvShowDetailsActivity extends AppCompatActivity {
@@ -35,23 +42,87 @@ public class TvShowDetailsActivity extends AppCompatActivity {
         viewModel = new ViewModelProvider(this).get(TvShowDetailsViewModel.class);
         getTvShowDetails();
         activityDetailsBinding.ivBackArrow.setOnClickListener(v -> onBackPressed());
+        showTvInfoPart();
+    }
+
+    private void showTvInfoPart() {
+        String showName = getIntent().getStringExtra("Name");
+        String showNetwork = getIntent().getStringExtra("Network");
+        String showStartDate = getIntent().getStringExtra("StartDate");
+        String showCountry = getIntent().getStringExtra("Country");
+        activityDetailsBinding.setShowName(showName);
+        activityDetailsBinding.setShowNetwork(showNetwork);
+        activityDetailsBinding.setShowStartedDate(showStartDate);
+        activityDetailsBinding.setShowCountry(showCountry);
     }
 
     private void getTvShowDetails() {
         activityDetailsBinding.setIsLoading(true);
-        int tvShowId = getIntent().getIntExtra("ID",-1);
+        int tvShowId = getIntent().getIntExtra("ID", -1);
         viewModel.getTvShowDetails(String.valueOf(tvShowId)).observe(this, new Observer<TvShowDetailsResponse>() {
             @Override
             public void onChanged(TvShowDetailsResponse tvShowDetailsResponse) {
                 activityDetailsBinding.setIsLoading(false);
 
-                if (tvShowDetailsResponse != null){
-                    if (tvShowDetailsResponse.getTvShow() != null){
-                        if (tvShowDetailsResponse.getTvShow().getPictures() != null){
+                if (tvShowDetailsResponse != null) {
+                    if (tvShowDetailsResponse.getTvShow() != null) {
+                        if (tvShowDetailsResponse.getTvShow().getPictures() != null) {
                             activityDetailsBinding.setImageUrl(
                                     tvShowDetailsResponse.getTvShow().getImageThumbnailPath()
                             );
+
+                            activityDetailsBinding.setShowDetails(
+                                    String.valueOf(
+                                            HtmlCompat.fromHtml(
+                                                    tvShowDetailsResponse.getTvShow().getDescription(),
+                                                    HtmlCompat.FROM_HTML_MODE_LEGACY
+                                            )
+                                    )
+                            );
+
+
+                            activityDetailsBinding.setShowGenre(
+                                    tvShowDetailsResponse.getTvShow().getGenres().get(0)
+                            );
+
+                            activityDetailsBinding.setShowRatting(
+                                    String.format(Locale.getDefault(),
+                                            "%.2f",
+                                            Double.parseDouble(tvShowDetailsResponse.getTvShow().getRating()))
+                            );
+
+                            activityDetailsBinding.setShowRuntime(String.valueOf(tvShowDetailsResponse.getTvShow().getRuntime()));
+
+                            activityDetailsBinding.tvMoreText.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    if (activityDetailsBinding.tvMoreText.getText().toString().equals("Read More")) {
+                                        activityDetailsBinding.tvDetails.setMaxLines(Integer.MAX_VALUE);
+                                        activityDetailsBinding.tvDetails.setEllipsize(null);
+                                        activityDetailsBinding.tvMoreText.setText(R.string.read_less);
+                                    } else {
+                                        activityDetailsBinding.tvDetails.setMaxLines(4);
+                                        activityDetailsBinding.tvDetails.setEllipsize(TextUtils.TruncateAt.END);
+                                        activityDetailsBinding.tvMoreText.setText(R.string.read_more);
+                                    }
+                                }
+                            });
+
+
                             loadImageSliders(tvShowDetailsResponse.getTvShow().getPictures());
+
+
+                            activityDetailsBinding.btnWebsite.setVisibility(View.VISIBLE);
+                            activityDetailsBinding.btnEpisode.setVisibility(View.VISIBLE);
+                            activityDetailsBinding.btnWebsite.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                                    intent.setData(Uri.parse(tvShowDetailsResponse.getTvShow().getUrl()));
+                                    startActivity(intent);
+                                }
+                            });
+
                         }
                     }
                 }
@@ -59,7 +130,7 @@ public class TvShowDetailsActivity extends AppCompatActivity {
         });
     }
 
-    private void loadImageSliders(String[] images){
+    private void loadImageSliders(String[] images) {
         activityDetailsBinding.sliderViewPager.setOffscreenPageLimit(1);
         activityDetailsBinding.sliderViewPager.setAdapter(new ImageSliderAdapter(images));
         activityDetailsBinding.sliderViewPager.setVisibility(View.VISIBLE);
@@ -75,13 +146,13 @@ public class TvShowDetailsActivity extends AppCompatActivity {
         });
     }
 
-    private void setupSliderIndicator(int count){
+    private void setupSliderIndicator(int count) {
         ImageView[] indicator = new ImageView[count];
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT
         );
-        layoutParams.setMargins(8,0,8,0);
-        for (int i = 0;i<count;i++){
+        layoutParams.setMargins(8, 0, 8, 0);
+        for (int i = 0; i < count; i++) {
             indicator[i] = new ImageView(getApplicationContext());
             indicator[i].setImageDrawable(ContextCompat.getDrawable(
                     getApplicationContext(),
@@ -93,12 +164,12 @@ public class TvShowDetailsActivity extends AppCompatActivity {
         activityDetailsBinding.layoutSliderIndicator.setVisibility(View.VISIBLE);
     }
 
-    private void setCurrentSliderIndicator(int position){
+    private void setCurrentSliderIndicator(int position) {
         int childCount = activityDetailsBinding.layoutSliderIndicator.getChildCount();
-        for (int i=0;i<childCount;i++){
+        for (int i = 0; i < childCount; i++) {
             ImageView imageView =
                     (ImageView) activityDetailsBinding.layoutSliderIndicator.getChildAt(i);
-            if (i == position){
+            if (i == position) {
                 imageView.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),
                         R.drawable.background_slider_indicator_actieve));
             } else {
