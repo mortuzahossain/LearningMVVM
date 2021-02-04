@@ -12,6 +12,7 @@ import io.github.mortuzahossain.mvvm.models.TvShowDetailsResponse;
 import io.github.mortuzahossain.mvvm.models.TvShowsItem;
 import io.github.mortuzahossain.mvvm.repositores.TvShowDetailsRepository;
 import io.reactivex.Completable;
+import io.reactivex.Flowable;
 
 /**
  * Created by Mortuza Hossain on 03-Feb-2021
@@ -33,5 +34,15 @@ public class TvShowDetailsViewModel extends AndroidViewModel {
 
     public Completable addToWatchlist(TvShowsItem tvShowsItem) {
         return tvShowsDatabase.getTvShowsDao().addToWatchlist(tvShowsItem);
+    }
+
+
+    public Completable removeTvShowFromWatchList(TvShowsItem tvShowsItem) {
+        return tvShowsDatabase.getTvShowsDao().removeFromWatchlist(tvShowsItem);
+    }
+
+
+    public Flowable<TvShowsItem> getTvShow(String showId) {
+        return tvShowsDatabase.getTvShowsDao().getAllTvShow(showId);
     }
 }

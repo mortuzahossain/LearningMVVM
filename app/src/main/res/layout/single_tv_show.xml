@@ -70,5 +70,17 @@
             app:layout_constraintStart_toStartOf="@+id/tvStarted"
             app:layout_constraintTop_toBottomOf="@+id/tvStarted" />
 
+        <ImageView
+            android:id="@+id/ivDelete"
+            android:layout_width="@dimen/_30sdp"
+            android:layout_height="@dimen/_30sdp"
+            android:layout_margin="@dimen/_10sdp"
+            android:background="@drawable/background_slider_indicator_inactieve"
+            android:padding="@dimen/_4sdp"
+            android:src="@drawable/ic_baseline_delete_forever"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

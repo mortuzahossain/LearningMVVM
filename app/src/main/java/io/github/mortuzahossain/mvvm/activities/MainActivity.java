@@ -9,6 +9,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -28,7 +30,7 @@ public class MainActivity extends AppCompatActivity implements TvShowClickListen
     private List<TvShowsItem> tvShowsItems = new ArrayList<>();
     private TvShowsAdapter adapter;
     private int currentPage = 1;
-    private int totalAvailablePages = 0;
+    private int totalAvailablePages = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +40,7 @@ public class MainActivity extends AppCompatActivity implements TvShowClickListen
     }
 
     private void Init() {
+        setSupportActionBar(activityMainBinding.toolbar);
         activityMainBinding.recyclerView.setHasFixedSize(true);
         viewModel = new ViewModelProvider(this).get(MostPopularTvShowsViewModel.class);
         adapter = new TvShowsAdapter(tvShowsItems, this);
@@ -86,12 +89,25 @@ public class MainActivity extends AppCompatActivity implements TvShowClickListen
     @Override
     public void onTvShowClicked(TvShowsItem tvShow) {
         Intent intent = new Intent(MainActivity.this, TvShowDetailsActivity.class);
-        intent.putExtra("ID", tvShow.getId());
-        intent.putExtra("Name", tvShow.getName());
-        intent.putExtra("StartDate", tvShow.getStartDate());
-        intent.putExtra("Country", tvShow.getCountry());
-        intent.putExtra("Network", tvShow.getNetwork());
         intent.putExtra("tvShow", tvShow);
         startActivity(intent);
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.search) {
+            Toast.makeText(this, "Search", Toast.LENGTH_SHORT).show();
+        }
+        if (item.getItemId() == R.id.watchList) {
+            startActivity(new Intent(MainActivity.this, WatchlistActivity.class));
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 }

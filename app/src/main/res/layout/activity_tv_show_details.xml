@@ -326,6 +326,7 @@
             android:layout_height="@dimen/_40sdp"
             android:layout_marginEnd="@dimen/_10sdp"
             android:layout_marginBottom="@dimen/_10sdp"
+            android:visibility="gone"
             android:background="@drawable/background_slider_indicator_inactieve"
             android:padding="@dimen/_10sdp"
             android:src="@drawable/ic_baseline_remove_red_eye"

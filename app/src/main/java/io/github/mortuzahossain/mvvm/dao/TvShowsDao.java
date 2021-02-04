@@ -15,7 +15,6 @@ import androidx.room.Query;
 
 import java.util.List;
 
-import io.github.mortuzahossain.mvvm.models.TvShow;
 import io.github.mortuzahossain.mvvm.models.TvShowsItem;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
@@ -30,6 +29,8 @@ public interface TvShowsDao {
     Completable addToWatchlist(TvShowsItem tvShowsItem);
 
     @Delete
-    void removeFromWatchlist(TvShowsItem tvShowsItem);
+    Completable removeFromWatchlist(TvShowsItem tvShowsItem);
 
+    @Query("Select * from tvShows where id=:showId")
+    Flowable<TvShowsItem> getAllTvShow(String showId);
 }

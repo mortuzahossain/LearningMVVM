@@ -42,6 +42,8 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 
+import static io.github.mortuzahossain.mvvm.database.TempData.isWatchlistUpdated;
+
 public class TvShowDetailsActivity extends AppCompatActivity {
 
     private ActivityTvShowDetailsBinding activityDetailsBinding;
@@ -49,6 +51,7 @@ public class TvShowDetailsActivity extends AppCompatActivity {
     private BottomSheetDialog episodeBottomSheetDialog;
     private LayoutEpisodeBottomSheetBinding layoutEpisodeBottomSheetBinding;
     private TvShowsItem tvShowsItem;
+    private boolean isInWishList = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,26 +63,38 @@ public class TvShowDetailsActivity extends AppCompatActivity {
     private void InitUi() {
         viewModel = new ViewModelProvider.AndroidViewModelFactory(getApplication()).create(TvShowDetailsViewModel.class);
 //        viewModel = new ViewModelProvider(this).get(TvShowDetailsViewModel.class);
-        getTvShowDetails();
+
         activityDetailsBinding.ivBackArrow.setOnClickListener(v -> onBackPressed());
-        showTvInfoPart();
+
         tvShowsItem = (TvShowsItem) getIntent().getSerializableExtra("tvShow");
+
+        showTvInfoPart();
+        getTvShowDetails();
+        checkTvShowInWatchList();
+    }
+
+    private void checkTvShowInWatchList() {
+        CompositeDisposable disposable = new CompositeDisposable();
+        disposable.add(viewModel.getTvShow(String.valueOf(tvShowsItem.getId()))
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(tvShowsItem -> {
+                    isInWishList = true;
+                    disposable.dispose();
+                })
+        );
     }
 
     private void showTvInfoPart() {
-        String showName = getIntent().getStringExtra("Name");
-        String showNetwork = getIntent().getStringExtra("Network");
-        String showStartDate = getIntent().getStringExtra("StartDate");
-        String showCountry = getIntent().getStringExtra("Country");
-        activityDetailsBinding.setShowName(showName);
-        activityDetailsBinding.setShowNetwork(showNetwork);
-        activityDetailsBinding.setShowStartedDate(showStartDate);
-        activityDetailsBinding.setShowCountry(showCountry);
+        activityDetailsBinding.setShowName(tvShowsItem.getName());
+        activityDetailsBinding.setShowNetwork(tvShowsItem.getNetwork());
+        activityDetailsBinding.setShowStartedDate(tvShowsItem.getStartDate());
+        activityDetailsBinding.setShowCountry(tvShowsItem.getCountry());
     }
 
     private void getTvShowDetails() {
         activityDetailsBinding.setIsLoading(true);
-        int tvShowId = getIntent().getIntExtra("ID", -1);
+        int tvShowId = tvShowsItem.getId();
         viewModel.getTvShowDetails(String.valueOf(tvShowId)).observe(this, tvShowDetailsResponse -> {
             activityDetailsBinding.setIsLoading(false);
 
@@ -166,7 +181,7 @@ public class TvShowDetailsActivity extends AppCompatActivity {
                                     layoutEpisodeBottomSheetBinding.episodeRecyclerView.addItemDecoration(dividerItemDecoration);
 
                                     layoutEpisodeBottomSheetBinding.tvTitle.setText(
-                                            String.format("Episode | %s", getIntent().getStringExtra("Name"))
+                                            String.format("Episode | %s", tvShowsItem.getName())
                                     );
                                     layoutEpisodeBottomSheetBinding.ivClose.setOnClickListener(v1 -> episodeBottomSheetDialog.dismiss());
                                 }
@@ -189,17 +204,40 @@ public class TvShowDetailsActivity extends AppCompatActivity {
                         });
 
 
+                        activityDetailsBinding.ivWatchlist.setVisibility(View.VISIBLE);
+                        if (isInWishList) {
+                            activityDetailsBinding.ivWatchlist.setImageResource(R.drawable.ic_baseline_check);
+                        }
+
+
                         activityDetailsBinding.ivWatchlist.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                new CompositeDisposable().add(viewModel.addToWatchlist(tvShowsItem)
-                                        .subscribeOn(Schedulers.io())
-                                        .observeOn(AndroidSchedulers.mainThread())
-                                        .subscribe(() -> {
-                                            activityDetailsBinding.ivWatchlist.setImageResource(R.drawable.ic_baseline_check);
-                                            Toast.makeText(TvShowDetailsActivity.this, "Added to watchlist.", Toast.LENGTH_SHORT).show();
-                                        })
-                                );
+                                if (!isInWishList) {
+                                    new CompositeDisposable().add(viewModel.addToWatchlist(tvShowsItem)
+                                            .subscribeOn(Schedulers.io())
+                                            .observeOn(AndroidSchedulers.mainThread())
+                                            .subscribe(() -> {
+                                                isInWishList = true;
+                                                isWatchlistUpdated = true;
+                                                activityDetailsBinding.ivWatchlist.setImageResource(R.drawable.ic_baseline_check);
+                                                Toast.makeText(TvShowDetailsActivity.this, "Added to watchlist.", Toast.LENGTH_SHORT).show();
+                                            })
+                                    );
+                                } else {
+                                    new CompositeDisposable().add(viewModel.removeTvShowFromWatchList(tvShowsItem)
+                                            .subscribeOn(Schedulers.io())
+                                            .observeOn(AndroidSchedulers.mainThread())
+                                            .subscribe(() -> {
+                                                isInWishList = false;
+                                                isWatchlistUpdated = true;
+                                                activityDetailsBinding.ivWatchlist.setImageResource(R.drawable.ic_baseline_remove_red_eye);
+                                                Toast.makeText(TvShowDetailsActivity.this,
+                                                        "Removed from watchlist.",
+                                                        Toast.LENGTH_SHORT).show();
+                                            })
+                                    );
+                                }
                             }
                         });
 
