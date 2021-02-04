@@ -80,10 +80,15 @@ public class TvShowDetailsActivity extends AppCompatActivity {
                                     )
                             );
 
-
-                            activityDetailsBinding.setShowGenre(
-                                    tvShowDetailsResponse.getTvShow().getGenres().get(0)
-                            );
+                            if (tvShowDetailsResponse.getTvShow().getGenres() != null) {
+                                activityDetailsBinding.setShowGenre(
+                                        tvShowDetailsResponse.getTvShow().getGenres().get(0)
+                                );
+                            } else {
+                                activityDetailsBinding.setShowGenre(
+                                        "N/A"
+                                );
+                            }
 
                             activityDetailsBinding.setShowRatting(
                                     String.format(Locale.getDefault(),
