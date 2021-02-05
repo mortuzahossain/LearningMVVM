@@ -7,9 +7,13 @@
         android:height="@dimen/_8sdp" />
 
     <corners
-        android:bottomLeftRadius="@dimen/_10sdp"
-        android:bottomRightRadius="@dimen/_10sdp" />
+        android:topRightRadius="@dimen/_4sdp"
+        android:bottomLeftRadius="@dimen/_4sdp"
+        android:bottomRightRadius="@dimen/_4sdp"
+        android:topLeftRadius="@dimen/_4sdp" />
 
-    <solid android:color="@color/purple_500" />
+
+    <stroke android:color="@color/purple_700" android:width="@dimen/_2sdp"/>
+    <solid android:color="@color/teal_200" />
 
 </shape>
