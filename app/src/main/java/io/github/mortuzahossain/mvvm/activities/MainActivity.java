@@ -102,7 +102,7 @@ public class MainActivity extends AppCompatActivity implements TvShowClickListen
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.search) {
-            Toast.makeText(this, "Search", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(MainActivity.this, SearchActivity.class));
         }
         if (item.getItemId() == R.id.watchList) {
             startActivity(new Intent(MainActivity.this, WatchlistActivity.class));

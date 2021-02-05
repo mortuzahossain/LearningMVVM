@@ -22,4 +22,7 @@ public interface ApiService {
     @GET("show-details")
     Call<TvShowDetailsResponse> getTvShowDetails(@Query("q") String postId);
 
+    @GET("search")
+    Call<PopularResponse> searchTvShows(@Query("q") String search, @Query("page") int page);
+
 }
